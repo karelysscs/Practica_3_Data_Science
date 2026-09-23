@@ -1,0 +1,196 @@
+{
+  "_notes": "Preguntas construidas manualmente contra el texto real extraído (data/processed/*_pages_clean.jsonl) de ambos documentos, con página verificada. Las preguntas 'is_modified_article' explotan un caso real del corpus: el Art. 15 de la Ley 32069 ('Recursos del OECE') y el Art. 15 del Reglamento modificado por el DS 001-2026-EF ('Compradores Públicos') son artículos distintos con el mismo número mostrado, en documentos distintos — el motor debe citar el documento correcto, no confundirlos. Las preguntas out_of_domain deliberadamente incluyen una que suena del dominio (procedimiento de comparación de precios) pero cuyo detalle vive en el Reglamento, que NO está en el corpus indexado: debe abstenerse igual que con las preguntas totalmente ajenas.",
+  "questions": [
+    {
+      "id": "q01",
+      "question": "¿Cuál es la finalidad de la Ley N.° 32069?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [2]
+    },
+    {
+      "id": "q02",
+      "question": "¿Cuáles son los recursos del OECE según la Ley General de Contrataciones Públicas?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [11]
+    },
+    {
+      "id": "q03",
+      "question": "¿Qué se considera un contrato menor y hasta cuántas UIT llega ese límite?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [19]
+    },
+    {
+      "id": "q04",
+      "question": "¿Cuándo queda desierto un procedimiento de selección?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [27]
+    },
+    {
+      "id": "q05",
+      "question": "¿Qué deben cubrir las garantías que otorgan los contratistas del Estado?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [28]
+    },
+    {
+      "id": "q06",
+      "question": "¿Qué tipos de adelanto puede entregar la entidad contratante al contratista?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [32]
+    },
+    {
+      "id": "q07",
+      "question": "¿En qué supuestos se impone la sanción de inhabilitación temporal a un proveedor?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [45]
+    },
+    {
+      "id": "q08",
+      "question": "Oye, ¿hasta cuánto puede costar una compra del Estado para que no le exijan todo el procedimiento de selección?",
+      "category": "in_domain",
+      "style": "colloquial",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [19],
+      "paraphrase_of": "q03"
+    },
+    {
+      "id": "q09",
+      "question": "Si a un concurso del Estado no se presenta ninguna oferta válida, ¿qué pasa con ese proceso?",
+      "category": "in_domain",
+      "style": "colloquial",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [27],
+      "paraphrase_of": "q04"
+    },
+    {
+      "id": "q10",
+      "question": "Si me gano un contrato con el Estado, ¿me pueden adelantar plata para empezar a trabajar?",
+      "category": "in_domain",
+      "style": "colloquial",
+      "is_modified_article": false,
+      "expected_doc_id": "ley_32069",
+      "expected_pages": [32],
+      "paraphrase_of": "q06"
+    },
+    {
+      "id": "q11",
+      "question": "Según el Decreto Supremo N.° 001-2026-EF, ¿quiénes son considerados compradores públicos?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": true,
+      "expected_doc_id": "ds_001_2026_ef",
+      "expected_pages": [2],
+      "version_trap_note": "El Art. 15 de la Ley 32069 (p.11) habla de 'Recursos del OECE', un tema distinto; el motor no debe citar ese artículo para esta pregunta."
+    },
+    {
+      "id": "q12",
+      "question": "Tras la modificación del DS N.° 001-2026-EF, ¿qué se requiere como mínimo para certificarse como comprador público?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": true,
+      "expected_doc_id": "ds_001_2026_ef",
+      "expected_pages": [2]
+    },
+    {
+      "id": "q13",
+      "question": "Con el cambio de este año, ¿qué te piden como mínimo para poder certificarte como comprador público del Estado?",
+      "category": "in_domain",
+      "style": "colloquial",
+      "is_modified_article": true,
+      "expected_doc_id": "ds_001_2026_ef",
+      "expected_pages": [2],
+      "paraphrase_of": "q12"
+    },
+    {
+      "id": "q14",
+      "question": "¿Qué porcentaje del monto del contrato representa la garantía de fiel cumplimiento, según el artículo modificado por el DS N.° 001-2026-EF?",
+      "category": "in_domain",
+      "style": "formal",
+      "is_modified_article": true,
+      "expected_doc_id": "ds_001_2026_ef",
+      "expected_pages": [5]
+    },
+    {
+      "id": "q15",
+      "question": "Con la modificación reciente, ¿de cuánto es la garantía que tiene que dejar el que gana un contrato del Estado?",
+      "category": "in_domain",
+      "style": "colloquial",
+      "is_modified_article": true,
+      "expected_doc_id": "ds_001_2026_ef",
+      "expected_pages": [5],
+      "paraphrase_of": "q14"
+    },
+    {
+      "id": "q16",
+      "question": "¿Cuál es la tasa actual del Impuesto General a las Ventas (IGV) en el Perú?",
+      "category": "out_of_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": null,
+      "expected_pages": [],
+      "reason": "Tema tributario, ajeno a la Ley 32069 y al DS 001-2026-EF."
+    },
+    {
+      "id": "q17",
+      "question": "¿Cuáles son los requisitos para obtener la nacionalidad peruana por naturalización?",
+      "category": "out_of_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": null,
+      "expected_pages": [],
+      "reason": "Derecho migratorio, no forma parte del corpus."
+    },
+    {
+      "id": "q18",
+      "question": "¿Qué dice el Código Civil peruano sobre los requisitos del matrimonio?",
+      "category": "out_of_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": null,
+      "expected_pages": [],
+      "reason": "Derecho civil, sin relación con contrataciones públicas."
+    },
+    {
+      "id": "q19",
+      "question": "¿Cuál es la remuneración mínima vital vigente en el Perú?",
+      "category": "out_of_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": null,
+      "expected_pages": [],
+      "reason": "Derecho laboral, no está en el corpus indexado."
+    },
+    {
+      "id": "q20",
+      "question": "¿Qué procedimiento específico establece el Reglamento de la Ley N.° 32069 para la comparación de precios como método de selección?",
+      "category": "out_of_domain",
+      "style": "formal",
+      "is_modified_article": false,
+      "expected_doc_id": null,
+      "expected_pages": [],
+      "reason": "Trampa de dominio: la Ley (Art. 56.1) menciona que ese procedimiento 'se rige por lo señalado en el reglamento', pero el Reglamento en sí no está en el corpus indexado (solo el DS que modifica algunos de sus artículos, ninguno de ellos éste). El motor debe reconocer que no tiene el detalle y abstenerse, no inventar el procedimiento."
+    }
+  ]
+}

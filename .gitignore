@@ -1,0 +1,26 @@
+# Entornos y credenciales
+.env
+*.env.local
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Tarea 1: los PDF fuente, fragmentos e índices SÍ se versionan (repo chico,
+# ~8MB, y así queda reproducible sin depender de que las URLs sigan vivas).
+# Solo se ignoran archivos temporales de debug si aparecen.
+tarea1_rag_normativo/**/_debug_*
+
+# Tarea 2: datos de contrataciones (pueden ser pesados) — se regeneran con los scripts
+tarea2_radar/data/raw/*
+tarea2_radar/data/processed/*
+!tarea2_radar/data/raw/.gitkeep
+!tarea2_radar/data/processed/.gitkeep
+
+# Streamlit / OS
+.streamlit/secrets.toml
+.DS_Store
+Thumbs.db
+
+# Logs (mantenemos estructura, no contenido pesado)
+*.log

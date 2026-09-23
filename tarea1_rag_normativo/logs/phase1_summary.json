@@ -1,0 +1,39 @@
+{
+  "run_at_utc": "2026-09-23T21:59:41.967738+00:00",
+  "documents": [
+    {
+      "doc_id": "ley_32069",
+      "file": "ley_32069_gcp_con_modificaciones_al_19-07-2026.pdf",
+      "source_url": "https://cdn.www.gob.pe/uploads/document/file/9295551/6444155-ley-general-de-contrataciones-publicas-con-modificaciones-posteriores-hasta-el-19-07-2026.pdf",
+      "source_portal": "gob.pe (colección OECE)",
+      "page_count": 63,
+      "is_text_extractable": true,
+      "suspicious_pages": [],
+      "min_chars_per_page": 1234,
+      "max_chars_per_page": 4268,
+      "mean_chars_per_page": 3490.2,
+      "median_chars_per_page": 3546,
+      "embedded_image_count": 0,
+      "quality_report": "logs\\quality_report_ley_32069.md",
+      "raw_output": "data\\processed\\ley_32069_pages_raw.jsonl",
+      "clean_output": "data\\processed\\ley_32069_pages_clean.jsonl"
+    },
+    {
+      "doc_id": "ds_001_2026_ef",
+      "file": "ds_001-2026-ef_modifica_reglamento_ley32069.pdf",
+      "source_url": "https://busquedas.elperuano.pe/dispositivo/NL/2474920-3",
+      "source_portal": "El Peruano (Diario Oficial, Normas Legales)",
+      "page_count": 16,
+      "is_text_extractable": true,
+      "suspicious_pages": [],
+      "min_chars_per_page": 6446,
+      "max_chars_per_page": 8093,
+      "mean_chars_per_page": 7036.1,
+      "median_chars_per_page": 6980.0,
+      "embedded_image_count": 0,
+      "quality_report": "logs\\quality_report_ds_001_2026_ef.md",
+      "raw_output": "data\\processed\\ds_001_2026_ef_pages_raw.jsonl",
+      "clean_output": "data\\processed\\ds_001_2026_ef_pages_clean.jsonl"
+    }
+  ]
+}

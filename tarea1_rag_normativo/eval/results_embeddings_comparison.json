@@ -1,0 +1,347 @@
+{
+  "selected_chunk_config": "config_a_articulo_corto",
+  "embedders": [
+    {
+      "embedder": "local",
+      "vector_dimension": 384,
+      "fragment_count": 479,
+      "recall_at_k": {
+        "1": 0.533,
+        "3": 0.6,
+        "5": 0.733
+      },
+      "mean_query_latency_seconds": 0.0384,
+      "total_eval_query_time_seconds": 0.768,
+      "in_domain_top1_similarity": {
+        "min": 0.8521,
+        "max": 0.9002,
+        "mean": 0.8776
+      },
+      "out_of_domain_top1_similarity": {
+        "min": 0.8258,
+        "max": 0.878,
+        "mean": 0.8451
+      },
+      "per_question": [
+        {
+          "id": "q01",
+          "category": "in_domain",
+          "top_similarity": 0.8692243695259094,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": false
+          },
+          "latency_seconds": 0.1575,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            1,
+            1
+          ]
+        },
+        {
+          "id": "q02",
+          "category": "in_domain",
+          "top_similarity": 0.8958249688148499,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": true
+          },
+          "latency_seconds": 0.03,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            9,
+            9
+          ]
+        },
+        {
+          "id": "q03",
+          "category": "in_domain",
+          "top_similarity": 0.8725064992904663,
+          "hit_at_k": {
+            "1": false,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0299,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            45,
+            45
+          ]
+        },
+        {
+          "id": "q04",
+          "category": "in_domain",
+          "top_similarity": 0.8956365585327148,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0302,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            27,
+            27
+          ]
+        },
+        {
+          "id": "q05",
+          "category": "in_domain",
+          "top_similarity": 0.8705536127090454,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": false
+          },
+          "latency_seconds": 0.0316,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            54,
+            54
+          ]
+        },
+        {
+          "id": "q06",
+          "category": "in_domain",
+          "top_similarity": 0.8984876275062561,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.033,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            31,
+            32
+          ]
+        },
+        {
+          "id": "q07",
+          "category": "in_domain",
+          "top_similarity": 0.8902023434638977,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0311,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            45,
+            45
+          ]
+        },
+        {
+          "id": "q08",
+          "category": "in_domain",
+          "top_similarity": 0.8639421463012695,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": false
+          },
+          "latency_seconds": 0.0324,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            35,
+            35
+          ]
+        },
+        {
+          "id": "q09",
+          "category": "in_domain",
+          "top_similarity": 0.8521023988723755,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": false
+          },
+          "latency_seconds": 0.0325,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            3,
+            3
+          ]
+        },
+        {
+          "id": "q10",
+          "category": "in_domain",
+          "top_similarity": 0.8590773940086365,
+          "hit_at_k": {
+            "1": false,
+            "3": false,
+            "5": true
+          },
+          "latency_seconds": 0.036,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "id": "q11",
+          "category": "in_domain",
+          "top_similarity": 0.9002394676208496,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0324,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": "q12",
+          "category": "in_domain",
+          "top_similarity": 0.8915534615516663,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0354,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": "q13",
+          "category": "in_domain",
+          "top_similarity": 0.8701158761978149,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0292,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": "q14",
+          "category": "in_domain",
+          "top_similarity": 0.879473090171814,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0334,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": "q15",
+          "category": "in_domain",
+          "top_similarity": 0.8556048274040222,
+          "hit_at_k": {
+            "1": true,
+            "3": true,
+            "5": true
+          },
+          "latency_seconds": 0.0317,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": "q16",
+          "category": "out_of_domain",
+          "top_similarity": 0.8385132551193237,
+          "hit_at_k": {},
+          "latency_seconds": 0.0337,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            16,
+            16
+          ]
+        },
+        {
+          "id": "q17",
+          "category": "out_of_domain",
+          "top_similarity": 0.841444194316864,
+          "hit_at_k": {},
+          "latency_seconds": 0.0328,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            55,
+            56
+          ]
+        },
+        {
+          "id": "q18",
+          "category": "out_of_domain",
+          "top_similarity": 0.8257718086242676,
+          "hit_at_k": {},
+          "latency_seconds": 0.0298,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            7,
+            7
+          ]
+        },
+        {
+          "id": "q19",
+          "category": "out_of_domain",
+          "top_similarity": 0.841615617275238,
+          "hit_at_k": {},
+          "latency_seconds": 0.0315,
+          "top1_doc_id": "ley_32069",
+          "top1_pages": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": "q20",
+          "category": "out_of_domain",
+          "top_similarity": 0.8779575824737549,
+          "hit_at_k": {},
+          "latency_seconds": 0.0334,
+          "top1_doc_id": "ds_001_2026_ef",
+          "top1_pages": [
+            1,
+            1
+          ]
+        }
+      ],
+      "indexing_time_seconds": 0.0,
+      "indexing_cost_usd": 0.0
+    },
+    {
+      "embedder": "openai",
+      "skipped": true,
+      "reason": "Falló la llamada a la API de OpenAI: RateLimitError: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}"
+    }
+  ],
+  "threshold_calibration": {
+    "in_domain_top1_min": 0.8521,
+    "out_of_domain_top1_max": 0.878,
+    "out_of_domain_top1_max_excluding_domain_adjacent_trap": 0.8416,
+    "domain_adjacent_trap_question": "q20",
+    "suggested_threshold": 0.847,
+    "midpoint_including_trap": 0.865,
+    "clean_separation": false,
+    "note": "La pregunta out-of-domain con mayor similitud es **q20** (sim=0.878): Trampa de dominio: la Ley (Art. 56.1) menciona que ese procedimiento 'se rige por lo señalado en el reglamento', pero el Reglamento en sí no está en el corpus indexado (solo el DS que modifica algunos de sus artículos, ninguno de ellos éste). El motor debe reconocer que no tiene el detalle y abstenerse, no inventar el procedimiento. Es un caso límite deliberado (tema del dominio pero detalle fuera del corpus indexado), no una pregunta genuinamente ajena; por eso se calibra el umbral con el resto de preguntas out-of-domain (máx.=0.8416) en vez de con este outlier. Umbral operativo elegido: 0.847 (vs. 0.8521 mínimo in-domain). Con este umbral, **q20 sigue sin abstenerse por similitud** — queda como responsabilidad de la segunda capa de abstención (instrucción explícita al LLM de no responder sin respaldo en los fragmentos), documentado como limitación conocida del sistema."
+  },
+  "configured_threshold": 0.845
+}

@@ -1,0 +1,120 @@
+# =========================================================================
+# Configuración central de la Tarea 1 — RAG Normativo de Contrataciones Públicas
+# Ningún valor de este pipeline debe estar hardcodeado en el código:
+# todo parámetro operativo vive aquí. Credenciales van en .env (nunca aquí).
+# =========================================================================
+
+paths:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  logs_dir: "logs"
+  eval_dir: "eval"
+
+# --- Documentos fuente obligatorios (Fase 1) ---------------------------------
+documents:
+  - id: "ley_32069"
+    title: "Ley N.° 32069, Ley General de Contrataciones Públicas"
+    file: "ley_32069_gcp_con_modificaciones_al_19-07-2026.pdf"
+    source_url: "https://cdn.www.gob.pe/uploads/document/file/9295551/6444155-ley-general-de-contrataciones-publicas-con-modificaciones-posteriores-hasta-el-19-07-2026.pdf"
+    source_portal: "gob.pe (colección OECE)"
+    version_label: "Texto con modificaciones posteriores al 19-07-2026"
+    version_date: "2026-07-19"
+    document_role: "original"          # ley base
+    supersedes: null
+
+  - id: "ds_001_2026_ef"
+    title: "Decreto Supremo N.° 001-2026-EF"
+    file: "ds_001-2026-ef_modifica_reglamento_ley32069.pdf"
+    source_url: "https://busquedas.elperuano.pe/dispositivo/NL/2474920-3"
+    source_portal: "El Peruano (Diario Oficial, Normas Legales)"
+    version_label: "Publicado 08-01-2026, modifica el Reglamento aprobado por DS 009-2025-EF"
+    version_date: "2026-01-08"
+    document_role: "modificatoria"     # decreto que modifica el reglamento
+    supersedes: "reglamento_ley_32069_ds_009_2025_ef"  # referencia informativa, no indexado
+
+# --- Fase 1: extracción y limpieza -------------------------------------------
+extraction:
+  min_chars_per_page_ok: 200     # por debajo de esto, la página se marca "sospechosa" en el reporte de calidad
+  encoding: "utf-8"
+
+cleaning:
+  # Encabezados/pies de página repetidos que se listan explícitamente
+  # (evidencia del patrón real observado en los PDFs; no se recorta a ciegas)
+  boilerplate_patterns:
+    - '^NORMAS LEGALES$'
+    - '^El Peruano\s*/?\s*$'
+    - '^\d{1,3}\s*$'                                  # número de página aislado en su propia línea
+    - '^(Lunes|Martes|Mi[ée]rcoles|Jueves|Viernes|S[áa]bado|Domingo)\s+\d{1,2}\s+de\s+\w+\s+de\s+\d{4}\s*$'
+  join_hyphenated_linebreaks: true   # une palabras cortadas por guion al final de línea ("adelan-\ntos" -> "adelantos")
+  collapse_whitespace: true
+  strip_control_chars: true
+
+# --- Fase 2: chunking, embeddings e índice -----------------------------------
+chunking:
+  # Se prueban ambas configuraciones y se reporta evidencia (Fase 2, mínimo 2 configuraciones)
+  configs:
+    - name: "config_a_articulo_corto"
+      chunk_size_chars: 800
+      chunk_overlap_chars: 120
+    - name: "config_b_articulo_largo"
+      chunk_size_chars: 1500
+      chunk_overlap_chars: 250
+  selected_config: "config_a_articulo_corto"   # elegida tras evaluación (ver eval/results, Fase 4): Recall@5 = 0.733 vs 0.6 de config_b con el mismo modelo de embeddings
+
+embeddings:
+  local:
+    provider: "sentence-transformers"
+    model_name: "intfloat/multilingual-e5-small"   # entrenado para retrieval (prefijos query:/passage:), mejor Recall@k que un modelo de similitud genérico
+    dimension: 384
+  openai:
+    provider: "openai"
+    model_name: "text-embedding-3-small"   # tomado de .env OPENAI_EMBEDDING_MODEL si difiere
+    dimension: 1536
+
+index:
+  metric: "cosine"
+  store_format: "jsonl+npy"     # fragmentos+metadata en jsonl, vectores en .npy (idempotente y sin dependencias pesadas de DB)
+
+# --- Fase 3: motor RAG --------------------------------------------------------
+rag_engine:
+  llm_provider: "openai"
+  llm_model_env_var: "OPENAI_CHAT_MODEL"   # nombre real del modelo se lee de .env
+  top_k: 5
+  # Calibrado con eval/results_embeddings_comparison.json (Fase 4, modelo intfloat/multilingual-e5-small):
+  # las 4 preguntas out-of-domain "genéricas" (temas ajenos) caen en similitud top-1 0.826-0.842;
+  # las 15 preguntas in-domain (incluidas las coloquiales, las más difíciles) caen en 0.852-0.900.
+  # 0.845 separa ambos grupos sin generar falsas abstenciones en el set de evaluación.
+  # Excepción documentada: la pregunta-trampa "de dominio pero fuera de corpus" (q20, sobre un
+  # procedimiento que solo detalla el Reglamento -no indexado-) cae en 0.878, DENTRO del rango
+  # in-domain: la similitud por sí sola no la distingue. Por eso el motor tiene una segunda capa
+  # de abstención a nivel de prompt (ver _SYSTEM_PROMPT en src/rag_engine.py): el LLM debe decir
+  # explícitamente que no encuentra la respuesta si los fragmentos recuperados no la respaldan,
+  # en vez de inventarla a partir de contenido superficialmente relacionado.
+  similarity_threshold: 0.847
+  abstain_message: "No encuentro esta información en el corpus normativo indexado (Ley 32069 y DS 001-2026-EF). No puedo responder con evidencia suficiente."
+  max_context_fragments: 5
+
+# --- Precios de LLM y embeddings para el log de costos (Fase 3/4) -----------
+# Precios en USD por cada 1,000,000 de tokens. Fuente: pricing publicado por OpenAI.
+# "Tiempo" = fecha de referencia de estos precios, para que el reporte de costos
+# sea auditable si OpenAI cambia sus tarifas más adelante (cálculo de costo "time-based").
+pricing:
+  reference_date: "2026-09-23"
+  usd_per_1m_tokens:
+    gpt-4o-mini:
+      input: 0.15
+      output: 0.60
+    text-embedding-3-small:
+      input: 0.02
+      output: 0.0
+
+# --- Fase 4: evaluación --------------------------------------------------------
+evaluation:
+  eval_set_file: "eval/eval_set.json"
+  k_values: [1, 3, 5]
+  results_file: "eval/results_embeddings_comparison.json"
+
+# --- Fase 5: interfaz Streamlit ------------------------------------------------
+streamlit:
+  app_title: "RAG Normativo — Contrataciones Públicas (Ley 32069 y DS 001-2026-EF)"
+  default_index: "config_b_articulo_largo__local"
