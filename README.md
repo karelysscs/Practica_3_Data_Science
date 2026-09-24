@@ -159,6 +159,11 @@ python -m eval.run_eval             # Fase 4
 streamlit run app.py                # Fase 4/5: dashboard
 ```
 
+## Video de presentación
+
+- [docs/pipeline.md](docs/pipeline.md): diagramas de arquitectura de ambas tareas (para mostrar antes de cualquier código, como exige el issue).
+- [docs/video_script.md](docs/video_script.md): guion completo con tiempos, puntos a explicar y datos reales para citar.
+
 ## Próximos pasos
 
 - Cargar crédito en la cuenta de OpenAI usada y volver a correr `eval/run_eval.py`
