@@ -11,11 +11,14 @@ venv/
 # Solo se ignoran archivos temporales de debug si aparecen.
 tarea1_rag_normativo/**/_debug_*
 
-# Tarea 2: datos de contrataciones (pueden ser pesados) — se regeneran con los scripts
+# Tarea 2: el crudo (~200MB JSON sin comprimir) NO se versiona, se regenera con
+# `python build_data.py` (descarga oficial re-ejecutable, ver src/acquisition.py).
+# Lo procesado (tabla de 1 fila por proceso + índice de embeddings, ~40MB) SÍ se
+# versiona, igual que en la Tarea 1, para que el repo quede reproducible sin
+# tener que re-descargar ni re-embeber nada.
 tarea2_radar/data/raw/*
-tarea2_radar/data/processed/*
 !tarea2_radar/data/raw/.gitkeep
-!tarea2_radar/data/processed/.gitkeep
+tarea2_radar/_build_index_only.py
 
 # Streamlit / OS
 .streamlit/secrets.toml

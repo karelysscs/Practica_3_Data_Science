@@ -1,0 +1,30 @@
+{
+  "total_processes": 17915,
+  "acquisition": {
+    "rows_before_dedup": 17915,
+    "rows_after_raw_concat": 17915,
+    "rows_after_dedup_by_ocid": 17915,
+    "duplicated_ocids_removed": 0
+  },
+  "missing_or_zero_tender_amount": {
+    "count": 4790,
+    "pct": 26.74,
+    "rule": "tender_value_amount es nulo o <= 0.0"
+  },
+  "missing_description": {
+    "count": 0,
+    "pct": 0.0
+  },
+  "location_department": {
+    "missing_raw_value": 0,
+    "invalid_after_normalization": 0,
+    "invalid_examples": [],
+    "canonical_department_count": 25,
+    "rule": "Se pasa a mayúsculas, se quitan tildes/espacios extra y se compara contra los 25 departamentos oficiales; alias conocidos (LIMA METROPOLITANA, PROVINCIA CONSTITUCIONAL DEL CALLAO, etc., ver src/departments.py) se mapean al departamento canónico. Lo que no matchea queda marcado inválido."
+  },
+  "text_encoding": {
+    "records_with_mojibake_fixed": 0,
+    "residual_mojibake_after_fix": 2,
+    "rule": "Se detecta texto con patrón de doble-codificación (UTF-8 leído como Latin-1, ej. 'MUÃ¿OZ') y se repara con encode('latin1').decode('utf-8') cuando el resultado ya no contiene el patrón."
+  }
+}

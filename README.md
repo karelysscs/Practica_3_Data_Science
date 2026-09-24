@@ -6,13 +6,15 @@ públicas del Perú.
 
 - **Tarea 1** ([tarea1_rag_normativo/](tarea1_rag_normativo/)): asistente RAG sobre normativa
   de contrataciones públicas (Ley N.° 32069 y DS N.° 001-2026-EF), con Streamlit local.
-- **Tarea 2** (`tarea2_radar/`, pendiente): dashboard de datos de contrataciones del Estado
-  con RAG híbrido (embeddings + filtros estructurados) y mapa por departamento.
+- **Tarea 2** ([tarea2_radar/](tarea2_radar/)): dashboard de datos de contrataciones del Estado
+  (17,915 procesos reales, jul-sep 2026) con RAG híbrido (embeddings + filtros
+  estructurados), mapa por departamento e indicador de riesgo.
 
 ## Estado actual
 
 ✅ Tarea 1 completa (Fases 1-5).
-⏳ Tarea 2 no iniciada.
+✅ Tarea 2 completa (Fases 1-5) — ver [tarea2_radar/README.md](tarea2_radar/README.md).
+⏳ Falta: video de presentación.
 
 ## Requisitos previos (Windows)
 
@@ -145,10 +147,22 @@ modelo, tokens, costo real (tarifas en `config.yaml: pricing`, fecha de referenc
 2026-09-23) y latencia medida. El motor abstiene **antes** de llamar al LLM cuando
 la similitud no alcanza el umbral, evitando costo en esos casos.
 
+## Tarea 2 — Cómo correrla
+
+Ver [tarea2_radar/README.md](tarea2_radar/README.md) para el detalle completo
+(fuente de datos, arquitectura, resultados de cada fase). Resumen rápido:
+
+```bash
+cd tarea2_radar
+python build_data.py                # Fases 1-3 (descarga ~200MB, tarda; el índice es resumible)
+python -m eval.run_eval             # Fase 4
+streamlit run app.py                # Fase 4/5: dashboard
+```
+
 ## Próximos pasos
 
 - Cargar crédito en la cuenta de OpenAI usada y volver a correr `eval/run_eval.py`
-  para completar la comparación con `text-embedding-3-small` y las respuestas reales
-  del motor RAG.
-- Iniciar la Tarea 2 (Radar de contrataciones).
+  en ambas tareas para completar la comparación con `text-embedding-3-small` y las
+  respuestas reales del motor RAG (por ahora solo se verificó la ruta de abstención,
+  que no tiene costo).
 - Grabar el video de presentación (máx. 12 min, pipeline antes que código).

@@ -1,0 +1,5 @@
+{
+  "dimension": 384,
+  "row_count": 17915,
+  "embedder_model": "intfloat/multilingual-e5-small"
+}

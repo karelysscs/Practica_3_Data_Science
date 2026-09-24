@@ -1,0 +1,195 @@
+{
+  "vector_dimension": 384,
+  "row_count": 17915,
+  "recall_at_k": {
+    "1": 0.4,
+    "3": 0.6,
+    "5": 0.6,
+    "8": 0.6
+  },
+  "mean_query_latency_seconds": 0.0397,
+  "in_scope_top1_similarity": {
+    "min": 0.8317
+  },
+  "out_of_scope_top1_similarity": {
+    "max": 0.857
+  },
+  "threshold_calibration": {
+    "in_scope_min": 0.8317,
+    "out_of_scope_max": 0.857,
+    "suggested_threshold": 0.844,
+    "clean_separation": false
+  },
+  "configured_threshold": 0.844,
+  "per_question": [
+    {
+      "id": "q01",
+      "category": "in_scope",
+      "n_candidates_after_filters": 17915,
+      "top_similarity": 0.8690624237060547,
+      "hit_at_k": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.2077
+    },
+    {
+      "id": "q02",
+      "category": "in_scope",
+      "n_candidates_after_filters": 821,
+      "top_similarity": 0.861521303653717,
+      "hit_at_k": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "8": false
+      },
+      "latency_seconds": 0.0268
+    },
+    {
+      "id": "q03",
+      "category": "in_scope",
+      "n_candidates_after_filters": 17915,
+      "top_similarity": 0.8505407571792603,
+      "hit_at_k": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "8": false
+      },
+      "latency_seconds": 0.0262
+    },
+    {
+      "id": "q04",
+      "category": "in_scope",
+      "n_candidates_after_filters": 4651,
+      "top_similarity": 0.8640562295913696,
+      "hit_at_k": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "8": false
+      },
+      "latency_seconds": 0.027
+    },
+    {
+      "id": "q05",
+      "category": "in_scope",
+      "n_candidates_after_filters": 4651,
+      "top_similarity": 0.8367313146591187,
+      "hit_at_k": {
+        "1": false,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.0221
+    },
+    {
+      "id": "q06",
+      "category": "in_scope",
+      "n_candidates_after_filters": 411,
+      "top_similarity": 0.8555693030357361,
+      "hit_at_k": {
+        "1": false,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.0246
+    },
+    {
+      "id": "q07",
+      "category": "in_scope",
+      "n_candidates_after_filters": 17915,
+      "top_similarity": 0.8316682577133179,
+      "hit_at_k": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.0247
+    },
+    {
+      "id": "q08",
+      "category": "in_scope",
+      "n_candidates_after_filters": 1284,
+      "top_similarity": 0.8617726564407349,
+      "hit_at_k": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.0222
+    },
+    {
+      "id": "q09",
+      "category": "in_scope",
+      "n_candidates_after_filters": 362,
+      "top_similarity": 0.87198805809021,
+      "hit_at_k": {
+        "1": false,
+        "3": false,
+        "5": false,
+        "8": false
+      },
+      "latency_seconds": 0.0251
+    },
+    {
+      "id": "q10",
+      "category": "in_scope",
+      "n_candidates_after_filters": 1530,
+      "top_similarity": 0.870287299156189,
+      "hit_at_k": {
+        "1": true,
+        "3": true,
+        "5": true,
+        "8": true
+      },
+      "latency_seconds": 0.0274
+    },
+    {
+      "id": "q11",
+      "category": "out_of_scope",
+      "n_candidates_after_filters": 17915,
+      "top_similarity": 0.8570380210876465,
+      "hit_at_k": {
+        "1": null,
+        "3": null,
+        "5": null,
+        "8": null
+      },
+      "latency_seconds": 0.0272
+    },
+    {
+      "id": "q12",
+      "category": "out_of_scope",
+      "n_candidates_after_filters": 17915,
+      "top_similarity": 0.7743395566940308,
+      "hit_at_k": {
+        "1": null,
+        "3": null,
+        "5": null,
+        "8": null
+      },
+      "latency_seconds": 0.0275
+    },
+    {
+      "id": "q13",
+      "category": "out_of_scope",
+      "n_candidates_after_filters": 107,
+      "top_similarity": 0.8442168235778809,
+      "hit_at_k": {
+        "1": null,
+        "3": null,
+        "5": null,
+        "8": null
+      },
+      "latency_seconds": 0.028
+    }
+  ]
+}
