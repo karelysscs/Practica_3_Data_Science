@@ -24,8 +24,9 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from src.cost_logger import Timer, log_cost_entry
+from src.cost_logger import log_cost_entry
 from src.embeddings import cosine_search
+from src.llm_client import call_llm
 
 
 @dataclass
@@ -46,6 +47,7 @@ class CitedProcess:
     amount: float | None
     currency: str | None
     title: str
+    description: str | None
     similarity: float
 
 
@@ -102,7 +104,8 @@ def _build_context(cited: list[CitedProcess]) -> str:
     for c in cited:
         parts.append(
             f"### Proceso [OCID: {c.ocid}] (similitud={c.similarity:.3f})\n"
-            f"Título: {c.title}\nComprador: {c.buyer_name} ({c.department})\n"
+            f"Título: {c.title}\nDescripción: {c.description or '(sin descripción)'}\n"
+            f"Comprador: {c.buyer_name} ({c.department})\n"
             f"Monto: {c.amount} {c.currency}"
         )
     return "\n\n".join(parts)
@@ -151,7 +154,7 @@ def answer_question(
         cited.append(CitedProcess(
             ocid=row["ocid"], buyer_name=row["buyer_name"], department=row["buyer_department"],
             amount=row["tender_value_amount"], currency=row["tender_currency"],
-            title=row["tender_title"], similarity=score,
+            title=row["tender_title"], description=row["tender_description"], similarity=score,
         ))
 
     if top_similarity < threshold:
@@ -166,32 +169,28 @@ def answer_question(
             retrieval_time_seconds=retrieval_time, llm_time_seconds=None, cost_usd=0.0, llm_model=None,
         )
 
+    provider = cfg["rag_engine"].get("llm_provider", "openai")
     if not api_key:
-        raise RuntimeError("Se superó el umbral de similitud pero no hay OPENAI_API_KEY en .env.")
+        raise RuntimeError(
+            f"Se superó el umbral de similitud pero no hay API key configurada para "
+            f"el proveedor '{provider}' en .env."
+        )
 
-    from openai import OpenAI
-    client = OpenAI(api_key=api_key)
     context = _build_context(cited)
     user_prompt = f"Pregunta: {question}\n\nProcesos disponibles:\n\n{context}"
 
-    with Timer() as t:
-        resp = client.chat.completions.create(
-            model=llm_model,
-            messages=[{"role": "system", "content": _SYSTEM_PROMPT}, {"role": "user", "content": user_prompt}],
-            temperature=0.0,
-        )
-    llm_time = t.elapsed
-    usage = resp.usage
+    llm_resp = call_llm(provider, llm_model, _SYSTEM_PROMPT, user_prompt, api_key)
     entry = log_cost_entry(
         log_path=cost_log_path, call_type="chat", model=llm_model,
-        input_tokens=usage.prompt_tokens, output_tokens=usage.completion_tokens,
-        latency_seconds=llm_time, pricing_cfg=cfg["pricing"], context=f"query: {question[:120]}",
+        input_tokens=llm_resp.input_tokens, output_tokens=llm_resp.output_tokens,
+        latency_seconds=llm_resp.latency_seconds, pricing_cfg=cfg["pricing"],
+        context=f"query ({provider}): {question[:120]}",
     )
 
     return HybridRAGResult(
         question=question, filters=filters, n_candidates_after_filters=n_candidates,
-        abstained=False, abstain_reason=None, answer=resp.choices[0].message.content,
+        abstained=False, abstain_reason=None, answer=llm_resp.text,
         cited_processes=cited, top_similarity=top_similarity,
-        retrieval_time_seconds=retrieval_time, llm_time_seconds=llm_time,
+        retrieval_time_seconds=retrieval_time, llm_time_seconds=llm_resp.latency_seconds,
         cost_usd=entry.usd_cost, llm_model=llm_model,
     )

@@ -61,7 +61,11 @@ rag_engine:
   # out-of-scope hacia arriba). Umbral = punto medio de la evidencia.
   similarity_threshold: 0.844
   abstain_message: "No encuentro procesos de contratación en el corpus indexado (jul-sep 2026) que respalden esta consulta."
-  llm_model_env_var: "OPENAI_CHAT_MODEL"
+  llm_model_env_var: "OPENAI_CHAT_MODEL"   # nombre real del modelo se lee de .env (rama openai)
+  # "openai" (gpt-4o-mini, requiere crédito) o "gemini" (capa gratuita de Google
+  # AI Studio) — igual que en la Tarea 1, el issue no exige un proveedor
+  # específico para este LLM.
+  llm_provider: "gemini"
 
 pricing:
   reference_date: "2026-09-23"
@@ -69,6 +73,9 @@ pricing:
     gpt-4o-mini:
       input: 0.15
       output: 0.60
+    gemini-flash-lite-latest:
+      input: 0.0
+      output: 0.0
 
 # --- Fase 4: evaluación ---------------------------------------------------------
 evaluation:

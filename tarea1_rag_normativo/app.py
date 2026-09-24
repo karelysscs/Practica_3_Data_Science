@@ -17,7 +17,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from src.config import get_openai_api_key, get_openai_chat_model, load_config, resolve_path
+from src.config import get_llm_credentials, get_openai_api_key, load_config, resolve_path
 from src.embeddings import LocalEmbedder, OpenAIEmbedder
 from src.index_store import load_existing
 from src.rag_engine import answer_question
@@ -74,6 +74,8 @@ with tab_query:
                 format_func=lambda x: "Local (gratis)" if x == "local" else "OpenAI text-embedding-3-small",
             )
             st.caption(f"Umbral de abstención configurado: **{cfg['rag_engine']['similarity_threshold']}**")
+            _provider, _model, _ = get_llm_credentials(cfg)
+            st.caption(f"LLM de respuesta: **{_provider}** ({_model})")
 
         with col_left:
             question = st.text_input(
@@ -96,8 +98,7 @@ with tab_query:
                     logs_dir / "cost_log.jsonl",
                 )
 
-            api_key = get_openai_api_key()
-            llm_model = get_openai_chat_model(cfg)
+            llm_provider, llm_model, llm_api_key = get_llm_credentials(cfg)
 
             with st.spinner("Buscando en el corpus y generando respuesta..."):
                 try:
@@ -106,7 +107,7 @@ with tab_query:
                         index_dir=index_dir,
                         embedder=embedder,
                         cfg=cfg,
-                        api_key=api_key,
+                        api_key=llm_api_key,
                         llm_model=llm_model,
                         cost_log_path=logs_dir / "cost_log.jsonl",
                     )

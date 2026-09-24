@@ -18,8 +18,9 @@ from pathlib import Path
 
 import numpy as np
 
-from src.cost_logger import Timer, compute_cost, log_cost_entry
+from src.cost_logger import log_cost_entry
 from src.index_store import cosine_search, load_existing
+from src.llm_client import call_llm
 
 
 @dataclass
@@ -139,41 +140,30 @@ def answer_question(
             llm_model=None,
         )
 
+    provider = cfg["rag_engine"].get("llm_provider", "openai")
     if not api_key:
         raise RuntimeError(
-            "Se superó el umbral de similitud pero no hay OPENAI_API_KEY configurada en .env; "
-            "no se puede llamar al LLM."
+            f"Se superó el umbral de similitud pero no hay API key configurada para "
+            f"el proveedor '{provider}' en .env; no se puede llamar al LLM."
         )
-
-    from openai import OpenAI
-    client = OpenAI(api_key=api_key)
 
     context = _build_context(cited)
     user_prompt = f"Pregunta: {question}\n\nFragmentos disponibles:\n\n{context}"
 
-    with Timer() as t:
-        resp = client.chat.completions.create(
-            model=llm_model,
-            messages=[
-                {"role": "system", "content": _SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=0.0,
-        )
-    llm_time = t.elapsed
+    llm_resp = call_llm(provider, llm_model, _SYSTEM_PROMPT, user_prompt, api_key)
+    answer_text = llm_resp.text
 
-    answer_text = resp.choices[0].message.content
-    usage = resp.usage
     entry = log_cost_entry(
         log_path=cost_log_path,
         call_type="chat",
         model=llm_model,
-        input_tokens=usage.prompt_tokens,
-        output_tokens=usage.completion_tokens,
-        latency_seconds=llm_time,
+        input_tokens=llm_resp.input_tokens,
+        output_tokens=llm_resp.output_tokens,
+        latency_seconds=llm_resp.latency_seconds,
         pricing_cfg=cfg["pricing"],
-        context=f"query: {question[:120]}",
+        context=f"query ({provider}): {question[:120]}",
     )
+    llm_time = llm_resp.latency_seconds
 
     return RAGResult(
         question=question,

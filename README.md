@@ -30,9 +30,16 @@ públicas del Perú.
    copy .env.example .env
    ```
    Edita `.env` y pega tu key en `OPENAI_API_KEY=` (ver [platform.openai.com/api-keys](https://platform.openai.com/api-keys)).
-   **La cuenta necesita crédito cargado** (mínimo unos USD 5) para que el motor RAG
-   (Fase 3) y la comparación con `text-embedding-3-small` (Fase 4) funcionen; sin
-   crédito, esas llamadas devuelven `insufficient_quota` (error 429).
+   **La cuenta necesita crédito cargado** (mínimo unos USD 5) para que la
+   comparación con `text-embedding-3-small` (Fase 4, exigida así por el issue)
+   funcione; sin crédito, esas llamadas devuelven `insufficient_quota` (error 429).
+
+   **Alternativa gratuita para el LLM que responde preguntas** (no exigida por
+   el issue para un proveedor específico, solo la comparación de embeddings sí
+   pide OpenAI): consigue una key gratis en
+   [aistudio.google.com/apikey](https://aistudio.google.com/apikey), pégala en
+   `GEMINI_API_KEY=` del `.env`, y pon `rag_engine.llm_provider: "gemini"` en el
+   `config.yaml` de cada tarea (ya viene así por defecto). Sin costo, sin tarjeta.
 
 ## Tarea 1 — Cómo correrla
 

@@ -77,8 +77,11 @@ index:
 
 # --- Fase 3: motor RAG --------------------------------------------------------
 rag_engine:
-  llm_provider: "openai"
-  llm_model_env_var: "OPENAI_CHAT_MODEL"   # nombre real del modelo se lee de .env
+  # "openai" (gpt-4o-mini, requiere crédito) o "gemini" (capa gratuita de Google
+  # AI Studio) — el issue no exige un proveedor específico para este LLM, solo
+  # para la comparación de embeddings de la Fase 4 (esa sigue siendo OpenAI).
+  llm_provider: "gemini"
+  llm_model_env_var: "OPENAI_CHAT_MODEL"   # nombre real del modelo se lee de .env (rama openai)
   top_k: 5
   # Calibrado con eval/results_embeddings_comparison.json (Fase 4, modelo intfloat/multilingual-e5-small):
   # las 4 preguntas out-of-domain "genéricas" (temas ajenos) caen en similitud top-1 0.826-0.842;
@@ -106,6 +109,11 @@ pricing:
       output: 0.60
     text-embedding-3-small:
       input: 0.02
+      output: 0.0
+    # Gemini vía capa gratuita de Google AI Studio (alternativa al LLM de OpenAI,
+    # ver rag_engine.llm_provider): costo real $0 mientras se use esa cuota gratuita.
+    gemini-flash-lite-latest:
+      input: 0.0
       output: 0.0
 
 # --- Fase 4: evaluación --------------------------------------------------------

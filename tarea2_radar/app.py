@@ -16,13 +16,44 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.config import get_openai_api_key, get_openai_chat_model, load_config, resolve_path
+from src.config import get_llm_credentials, load_config, resolve_path
 from src.embeddings import LocalEmbedder
 from src.hybrid_rag import Filters, answer_question, apply_filters
 from src.index_store import load_index
 from src.risk_indicator import single_bidder_share_by_department, top_buyers_by_single_bidder_share
 
 st.set_page_config(page_title="Radar de Contrataciones Públicas", page_icon="🗺️", layout="wide")
+
+# Traducción de valores en inglés que vienen tal cual del estándar OCDS
+# (mainProcurementCategory), para que el dashboard se vea completo en español.
+CATEGORY_LABELS_ES = {"goods": "Bienes", "services": "Servicios", "works": "Obras"}
+COLUMN_LABELS_ES = {
+    "ocid": "OCID",
+    "buyer_id": "ID del comprador",
+    "buyer_name": "Comprador",
+    "buyer_department": "Departamento",
+    "tender_title": "Título",
+    "tender_description": "Descripción",
+    "main_category": "Categoría",
+    "tender_value_amount": "Monto (S/)",
+    "tender_currency": "Moneda",
+    "tender_date_published": "Fecha de publicación",
+    "num_tenderers": "N.° de postores",
+    "n_awards": "N.° de adjudicaciones",
+    "n_single_bidder": "Adjudicaciones a un solo postor",
+    "single_bidder_share": "% con un solo postor",
+    "source_month": "Mes de origen",
+    "count": "Cantidad de procesos",
+}
+
+
+def _translate_categories(series: pd.Series) -> pd.Series:
+    return series.map(CATEGORY_LABELS_ES).fillna(series)
+
+
+def _spanish_columns(df_in: pd.DataFrame) -> pd.DataFrame:
+    return df_in.rename(columns=COLUMN_LABELS_ES)
+
 
 cfg = load_config()
 processed_dir = resolve_path(cfg["paths"]["processed_dir"])
@@ -73,7 +104,10 @@ st.sidebar.header("Filtros")
 departments = ["(Todos)"] + sorted(df.loc[df["department_is_valid"], "buyer_department"].dropna().unique().tolist())
 sel_department = st.sidebar.selectbox("Departamento", departments)
 categories = ["(Todas)"] + sorted(df["main_category"].dropna().unique().tolist())
-sel_category = st.sidebar.selectbox("Categoría", categories)
+sel_category = st.sidebar.selectbox(
+    "Categoría", categories,
+    format_func=lambda c: c if c == "(Todas)" else CATEGORY_LABELS_ES.get(c, c),
+)
 amount_max_data = float(df["tender_value_amount"].fillna(0).quantile(0.99))
 sel_amount_range = st.sidebar.slider("Rango de monto (S/)", 0.0, max(amount_max_data, 1.0), (0.0, amount_max_data))
 dates = df["tender_date_published"].dropna()
@@ -132,16 +166,17 @@ with tab_map:
 # TAB — Pregunta (RAG híbrido)
 # ==========================================================================
 with tab_query:
+    _provider, _model, _ = get_llm_credentials(cfg)
     st.caption(f"Los filtros del panel izquierdo se aplican también a esta consulta. "
-               f"Umbral de abstención: {cfg['rag_engine']['similarity_threshold']}")
+               f"Umbral de abstención: {cfg['rag_engine']['similarity_threshold']} · "
+               f"LLM de respuesta: **{_provider}** ({_model})")
     question = st.text_input("Pregunta sobre los procesos de contratación:",
                               placeholder="Ej: ¿Hay procesos de compra de ambulancias?")
     ask = st.button("Preguntar", type="primary", disabled=not question)
 
     if ask and question:
         embedder = _get_embedder()
-        api_key = get_openai_api_key()
-        llm_model = get_openai_chat_model(cfg)
+        llm_provider, llm_model, api_key = get_llm_credentials(cfg)
         with st.spinner("Buscando procesos relevantes..."):
             try:
                 result = answer_question(
@@ -164,19 +199,23 @@ with tab_query:
             for p in result.cited_processes:
                 with st.expander(f"[{p.ocid}] {p.buyer_name} — {p.department} (similitud {p.similarity:.3f})"):
                     st.write(f"**Título:** {p.title}")
+                    st.write(f"**Descripción:** {p.description or '(sin descripción)'}")
                     st.write(f"**Monto:** {p.amount} {p.currency}")
 
 # ==========================================================================
 # TAB — Tabla / CSV
 # ==========================================================================
 with tab_table:
-    sort_col = st.selectbox("Ordenar por", ["tender_value_amount", "tender_date_published", "num_tenderers"])
-    sorted_df = filtered_df.sort_values(sort_col, ascending=False)
+    sort_options = ["tender_value_amount", "tender_date_published", "num_tenderers"]
+    sort_col = st.selectbox("Ordenar por", sort_options, format_func=lambda c: COLUMN_LABELS_ES.get(c, c))
+    sorted_df = filtered_df.sort_values(sort_col, ascending=False).copy()
+    sorted_df["main_category"] = _translate_categories(sorted_df["main_category"])
     display_cols = ["ocid", "buyer_name", "buyer_department", "tender_title", "main_category",
                      "tender_value_amount", "tender_currency", "tender_date_published", "num_tenderers"]
-    st.dataframe(sorted_df[display_cols], use_container_width=True, height=450)
+    display_df = _spanish_columns(sorted_df[display_cols])
+    st.dataframe(display_df, use_container_width=True, height=450)
     st.download_button(
-        "⬇️ Descargar CSV (filtrado)", sorted_df[display_cols].to_csv(index=False).encode("utf-8-sig"),
+        "⬇️ Descargar CSV (filtrado)", display_df.to_csv(index=False).encode("utf-8-sig"),
         file_name="procesos_filtrados.csv", mime="text/csv",
     )
 
@@ -187,17 +226,24 @@ with tab_dist:
     col1, col2 = st.columns(2)
     with col1:
         fig1 = px.histogram(filtered_df[filtered_df["tender_value_amount"] > 0], x="tender_value_amount",
-                             nbins=40, title="Distribución de montos (> S/ 0)")
+                             nbins=40, title="Distribución de montos (> S/ 0)",
+                             labels={"tender_value_amount": "Monto (S/)"})
+        fig1.update_yaxes(title_text="Cantidad de procesos")
         st.plotly_chart(fig1, use_container_width=True)
-        fig3 = px.bar(filtered_df["main_category"].value_counts().reset_index(),
-                      x="main_category", y="count", title="Procesos por categoría")
+
+        cat_counts = filtered_df["main_category"].value_counts().reset_index()
+        cat_counts["main_category"] = _translate_categories(cat_counts["main_category"])
+        fig3 = px.bar(cat_counts, x="main_category", y="count", title="Procesos por categoría",
+                      labels={"main_category": "Categoría", "count": "Cantidad de procesos"})
         st.plotly_chart(fig3, use_container_width=True)
     with col2:
         fig2 = px.bar(filtered_df["buyer_department"].value_counts().head(15).reset_index(),
-                      x="buyer_department", y="count", title="Top 15 departamentos por N° de procesos")
+                      x="buyer_department", y="count", title="Top 15 departamentos por N.° de procesos",
+                      labels={"buyer_department": "Departamento", "count": "Cantidad de procesos"})
         st.plotly_chart(fig2, use_container_width=True)
         fig4 = px.bar(filtered_df["source_month"].value_counts().sort_index().reset_index(),
-                      x="source_month", y="count", title="Procesos por mes de origen")
+                      x="source_month", y="count", title="Procesos por mes de origen",
+                      labels={"source_month": "Mes", "count": "Cantidad de procesos"})
         st.plotly_chart(fig4, use_container_width=True)
 
 # ==========================================================================
@@ -226,11 +272,11 @@ with tab_risk:
     )
     by_dept_risk = single_bidder_share_by_department(df)
     st.markdown("#### Por departamento")
-    st.dataframe(by_dept_risk, use_container_width=True)
+    st.dataframe(_spanish_columns(by_dept_risk), use_container_width=True)
 
     st.markdown(f"#### Top {cfg['risk']['top_n_buyers']} compradores "
                 f"(mínimo {cfg['risk']['min_processes_for_ranking']} adjudicaciones)")
     top_buyers = top_buyers_by_single_bidder_share(
         df, cfg["risk"]["min_processes_for_ranking"], cfg["risk"]["top_n_buyers"]
     )
-    st.dataframe(top_buyers, use_container_width=True)
+    st.dataframe(_spanish_columns(top_buyers), use_container_width=True)

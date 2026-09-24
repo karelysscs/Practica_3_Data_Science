@@ -61,3 +61,27 @@ def get_openai_embedding_model(cfg: dict[str, Any] | None = None) -> str:
     load_environment()
     cfg = cfg or load_config()
     return os.environ.get("OPENAI_EMBEDDING_MODEL", cfg["embeddings"]["openai"]["model_name"])
+
+
+def get_gemini_api_key() -> str | None:
+    load_environment()
+    return os.environ.get("GEMINI_API_KEY") or None
+
+
+def get_gemini_chat_model() -> str:
+    load_environment()
+    return os.environ.get("GEMINI_CHAT_MODEL", "gemini-3.6-flash")
+
+
+def get_llm_provider(cfg: dict[str, Any] | None = None) -> str:
+    cfg = cfg or load_config()
+    return cfg["rag_engine"].get("llm_provider", "openai")
+
+
+def get_llm_credentials(cfg: dict[str, Any] | None = None) -> tuple[str, str, str | None]:
+    """Devuelve (provider, model, api_key) según rag_engine.llm_provider en config.yaml."""
+    cfg = cfg or load_config()
+    provider = get_llm_provider(cfg)
+    if provider == "gemini":
+        return "gemini", get_gemini_chat_model(), get_gemini_api_key()
+    return "openai", get_openai_chat_model(cfg), get_openai_api_key()
