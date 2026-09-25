@@ -14,7 +14,6 @@ públicas del Perú.
 
 ✅ Tarea 1 completa (Fases 1-5).
 ✅ Tarea 2 completa (Fases 1-5) — ver [tarea2_radar/README.md](tarea2_radar/README.md).
-⏳ Falta: video de presentación.
 
 ## Requisitos previos (Windows)
 
@@ -173,7 +172,4 @@ streamlit run app.py                # Fase 4/5: dashboard
 ## Próximos pasos
 
 - Cargar crédito en la cuenta de OpenAI usada y volver a correr `eval/run_eval.py`
-  en ambas tareas para completar la comparación con `text-embedding-3-small` y las
-  respuestas reales del motor RAG (por ahora solo se verificó la ruta de abstención,
-  que no tiene costo).
-- Grabar el video de presentación (máx. 12 min, pipeline antes que código).
+  en ambas tareas para completar la comparación con `text-embedding-3-small`.
